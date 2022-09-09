@@ -1,18 +1,20 @@
 import {
-  REQUEST_API_TOKEN,
+  REQUEST_API,
   RECEIVE_TOKEN_SUCCESS,
-  RECEIVE_TOKEN_FAILURE,
-  SET_USER_DATA,
+  RECEIVE_FAILURE,
+  RECEIVE_TRIVIA_SUCCESS,
 } from '../actions';
 
 const INITIAL_STATE = {
   requesting: false,
   token: '',
+  error: '',
+  triviaQuestions: [],
 };
 
-const login = (state = INITIAL_STATE, { type, payload }) => {
+const apiReducer = (state = INITIAL_STATE, { type, payload }) => {
   switch (type) {
-  case REQUEST_API_TOKEN:
+  case REQUEST_API:
     return {
       ...state,
       requesting: true,
@@ -23,24 +25,20 @@ const login = (state = INITIAL_STATE, { type, payload }) => {
       requesting: false,
       token: payload,
     };
-  case RECEIVE_TOKEN_FAILURE:
+  case RECEIVE_TRIVIA_SUCCESS:
+    return {
+      ...state,
+      requesting: false,
+      trivia: payload,
+    };
+  case RECEIVE_FAILURE:
     return {
       ...state,
       requesting: false,
       error: payload,
     };
-  case SET_USER_DATA:
-    return {
-      ...state,
-      player: {
-        name: payload.userName,
-        gravatarEmail: payload.userEmail,
-        score: 0,
-        assertions: 0,
-      },
-    };
   default: return state;
   }
 };
 
-export default login;
+export default apiReducer;

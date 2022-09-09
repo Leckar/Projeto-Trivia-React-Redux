@@ -1,8 +1,9 @@
-import requestToken from '../../services/requestAPI';
+import requestToken from '../../services/requestToken';
 
-const REQUEST_API_TOKEN = 'REQUEST_API_TOKEN';
+const REQUEST_API = 'REQUEST_API';
 const RECEIVE_TOKEN_SUCCESS = 'RECEIVE_TOKEN_SUCCESS';
-const RECEIVE_TOKEN_FAILURE = 'RECEIVE_TOKEN_FAILURE';
+const RECEIVE_TRIVIA_SUCCESS = 'RECEIVE_TRIVIA_SUCCESS';
+const RECEIVE_FAILURE = 'RECEIVE_FAILURE';
 const SET_USER_DATA = 'SET_USER_DATA';
 
 // salvar login do usuário
@@ -12,8 +13,8 @@ const setUserAct = (userData) => ({
 });
 
 // pedir token
-const requestTokenAct = () => ({
-  type: REQUEST_API_TOKEN,
+const requestingApiAct = () => ({
+  type: REQUEST_API,
 });
 
 // token sucesso
@@ -22,29 +23,29 @@ const receiveTokenSuccess = (token) => ({
   payload: token,
 });
 
-// token falha
-const receiveTokenFailure = (error) => ({
-  type: RECEIVE_TOKEN_FAILURE,
+// falha
+const receiveFailure = (error) => ({
+  type: RECEIVE_FAILURE,
   payload: error,
 });
 
 // fetch token
 const fetchToken = async (dispatch) => {
-  dispatch(requestTokenAct());
+  dispatch(requestingApiAct());
   return requestToken()
     .then(({ token }) => {
       dispatch(receiveTokenSuccess(token));
       localStorage.setItem('token', token);
     })
-    .catch((error) => dispatch(receiveTokenFailure(error)));
+    .catch((error) => dispatch(receiveFailure(error)));
 };
 
-export default fetchToken;
-
 export {
-  REQUEST_API_TOKEN,
+  REQUEST_API,
   RECEIVE_TOKEN_SUCCESS,
-  RECEIVE_TOKEN_FAILURE,
+  RECEIVE_FAILURE,
   SET_USER_DATA,
+  RECEIVE_TRIVIA_SUCCESS,
   setUserAct,
+  fetchToken,
 };

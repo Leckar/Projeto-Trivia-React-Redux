@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import fetchToken, { setUserAct } from '../redux/actions';
+import { setUserAct, fetchToken } from '../redux/actions';
 
 class Login extends Component {
   state = {
@@ -110,8 +110,8 @@ Login.propTypes = {
   token: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = ({ login }) => ({
-  token: login.token,
+const mapStateToProps = ({ apiReducer }) => ({
+  token: apiReducer.token,
 });
 
 const mapDispatchToProps = (dispatch) => ({
