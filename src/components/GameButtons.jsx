@@ -3,9 +3,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 class GameButtons extends Component {
-  shouldComponentUpdate({ timer, isDisabled: prevIsDisabled }) {
-    const { isDisabled } = this.props;
-    return !timer || isDisabled !== prevIsDisabled;
+  shouldComponentUpdate({
+    timer,
+    isDisabled: prevIsDisabled,
+    curQuestion: { correct_answer: prevCorrectAnswer },
+  }) {
+    const { isDisabled, curQuestion: { correct_answer: correctAnswer } } = this.props;
+    return !timer || isDisabled !== prevIsDisabled || correctAnswer !== prevCorrectAnswer;
   }
 
   mapWrongAnswers = (answers) => {
@@ -26,14 +30,14 @@ class GameButtons extends Component {
   };
 
   rightAnswer = (answer) => {
-    const { isDisabled, disableQuestion } = this.props;
+    const { isDisabled, playerScore } = this.props;
 
     return (
       <button
         type="button"
         key="correct_answer"
         data-testid="correct-answer"
-        onClick={ disableQuestion }
+        onClick={ playerScore }
         className={ isDisabled ? 'correctAnswer' : '' }
         disabled={ isDisabled }
       >
@@ -90,6 +94,7 @@ GameButtons.propTypes = {
   nextQuestion: PropTypes.func.isRequired,
   disableQuestion: PropTypes.func.isRequired,
   isDisabled: PropTypes.bool.isRequired,
+  playerScore: PropTypes.func.isRequired,
   timer: PropTypes.number.isRequired,
   // requesting: PropTypes.bool.isRequired,
 };

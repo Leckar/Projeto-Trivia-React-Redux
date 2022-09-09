@@ -6,6 +6,13 @@ const RECEIVE_TOKEN_SUCCESS = 'RECEIVE_TOKEN_SUCCESS';
 const RECEIVE_TRIVIA_SUCCESS = 'RECEIVE_TRIVIA_SUCCESS';
 const RECEIVE_FAILURE = 'RECEIVE_FAILURE';
 const SET_USER_DATA = 'SET_USER_DATA';
+const SUM_SCORE = 'SUM_SCORE';
+
+// somar pontos
+const sumScoreAct = (points) => ({
+  type: SUM_SCORE,
+  payload: points,
+});
 
 // salvar login do usuário
 const setUserAct = (userData) => ({
@@ -73,7 +80,9 @@ export {
   RECEIVE_FAILURE,
   SET_USER_DATA,
   RECEIVE_TRIVIA_SUCCESS,
+  SUM_SCORE,
   setUserAct,
   fetchToken,
   fetchTrivia,
+  sumScoreAct,
 };
