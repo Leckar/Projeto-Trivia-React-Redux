@@ -29,7 +29,7 @@ const apiReducer = (state = INITIAL_STATE, { type, payload }) => {
     return {
       ...state,
       requesting: false,
-      trivia: payload,
+      triviaQuestions: payload,
     };
   case RECEIVE_FAILURE:
     return {

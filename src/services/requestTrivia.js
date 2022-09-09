@@ -5,8 +5,10 @@ const ENDPOINT = '/api.php';
 const requestTrivia = async (token) => {
   const ENDPOINT_PARAMS = `?amount=${minTriviaQuestions}&token=${token}`;
   const URL = `${BASE_URL}${ENDPOINT}${ENDPOINT_PARAMS}`;
+  const response = await fetch(URL);
+  const data = await response.json();
 
-  return fetch(URL).then((response) => response.json());
+  return data;
 };
 
 export default requestTrivia;
