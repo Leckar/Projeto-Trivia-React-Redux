@@ -8,11 +8,6 @@ class GameButtons extends Component {
     return !timer || isDisabled !== prevIsDisabled;
   }
 
-  componentDidUpdate() {
-    const { timer } = this.props;
-    if (!timer) this.answerQuestion();
-  }
-
   mapWrongAnswers = (answers) => {
     const { isDisabled, disableQuestion } = this.props;
 

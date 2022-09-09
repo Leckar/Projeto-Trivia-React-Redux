@@ -6,18 +6,18 @@ import GameButtons from '../components/GameButtons';
 import GameQuestion from '../components/GameQuestion';
 import { fetchTrivia } from '../redux/actions';
 
-const DIFFICULTY_SCORE = {
-  easy: 1,
-  medium: 2,
-  hard: 3,
-};
+// const DIFFICULTY_SCORE = {
+//   easy: 1,
+//   medium: 2,
+//   hard: 3,
+// };
 
 class Game extends Component {
   state = {
     timer: 30,
     isDisabled: false,
     questionIndex: 0,
-    userScore: 0,
+    // userScore: 0,
   };
 
   componentDidMount() {
@@ -66,16 +66,16 @@ class Game extends Component {
     }, ONE_SECOND);
   };
 
-  playerScore = () => {
-    const { timer, questionIndex } = this.state;
-    const { triviaQuestions } = this.props;
-    const { difficulty } = triviaQuestions[questionIndex];
-    const TEN_SECONDS = 10;
-    const points = TEN_SECONDS + (timer * DIFFICULTY_SCORE[difficulty]);
-    this.setState((prevState) => ({
-      userScore: prevState.userScore + points,
-    }));
-  };
+  // playerScore = () => {
+  //   const { timer, questionIndex } = this.state;
+  //   const { triviaQuestions } = this.props;
+  //   const { difficulty } = triviaQuestions[questionIndex];
+  //   const TEN_SECONDS = 10;
+  //   const points = TEN_SECONDS + (timer * DIFFICULTY_SCORE[difficulty]);
+  //   this.setState((prevState) => ({
+  //     userScore: prevState.userScore + points,
+  //   }));
+  // };
 
   render() {
     const { questionIndex, isDisabled, timer } = this.state;
