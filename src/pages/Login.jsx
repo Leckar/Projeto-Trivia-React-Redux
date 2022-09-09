@@ -19,10 +19,10 @@ class Login extends Component {
   }
 
   startGame = () => {
-    const { dispatch } = this.props;
+    const { dispatchFetchToken, dispatchSetUserAct } = this.props;
     const { isFormInvalid, ...userData } = this.state;
-    dispatch(fetchToken());
-    dispatch(setUserAct(userData));
+    dispatchFetchToken();
+    dispatchSetUserAct(userData);
   };
 
   handleChange = ({ target: { name, value } }) => {
@@ -104,7 +104,8 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  dispatchFetchToken: PropTypes.func.isRequired,
+  dispatchSetUserAct: PropTypes.func.isRequired,
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   token: PropTypes.string.isRequired,
 };
@@ -113,4 +114,9 @@ const mapStateToProps = ({ login }) => ({
   token: login.token,
 });
 
-export default connect(mapStateToProps)(Login);
+const mapDispatchToProps = (dispatch) => ({
+  dispatchFetchToken: () => dispatch(fetchToken),
+  dispatchSetUserAct: (state) => dispatch(setUserAct(state)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

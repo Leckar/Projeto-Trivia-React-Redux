@@ -29,7 +29,7 @@ const receiveTokenFailure = (error) => ({
 });
 
 // fetch token
-const fetchToken = () => async (dispatch) => {
+const fetchToken = async (dispatch) => {
   dispatch(requestTokenAct());
   return requestToken()
     .then(({ token }) => {
