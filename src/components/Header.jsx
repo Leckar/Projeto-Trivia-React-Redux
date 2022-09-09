@@ -5,13 +5,6 @@ import PropTypes from 'prop-types';
 import md5 from 'crypto-js/md5';
 
 class Header extends Component {
-  /* componentDidMount() {
-    const { gravatarEmail, setGravatarImage } = this.props;
-    const gravatarImage = `https://www.gravatar.com/avatar/${md5(gravatarEmail).toString()}`;
-
-    setGravatarImage(gravatarImage);
-  } */
-
   render() {
     const { gravatarEmail, name, score } = this.props;
 
@@ -36,7 +29,6 @@ Header.propTypes = {
   name: PropTypes.string.isRequired,
   gravatarEmail: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
-  // setGravatarImage: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = ({ player }) => ({

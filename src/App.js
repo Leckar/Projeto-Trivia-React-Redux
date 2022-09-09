@@ -4,7 +4,7 @@ import Login from './pages/Login';
 import Settings from './pages/Settings';
 import Game from './pages/Game';
 // import logo from './trivia.png';
-
+import './styles/Game.css';
 import './App.css';
 
 export default function App() {

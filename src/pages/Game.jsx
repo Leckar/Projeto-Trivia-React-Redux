@@ -6,17 +6,21 @@ import GameButtons from '../components/GameButtons';
 import GameQuestion from '../components/GameQuestion';
 import { fetchTrivia } from '../redux/actions';
 
-export class Game extends Component {
+const DIFFICULTY_SCORE = {
+  easy: 1,
+  medium: 2,
+  hard: 3,
+};
+
+class Game extends Component {
   state = {
-    // timer: 30,
-    // isDisable: false,
-    // gameDificult: 1,
+    timer: 30,
+    isDisabled: false,
     questionIndex: 0,
-    // userScore: 0,
+    userScore: 0,
   };
 
   componentDidMount() {
-    // this.timer();
     const {
       token,
       dispatchTriviaQuestions,
@@ -25,48 +29,58 @@ export class Game extends Component {
     dispatchTriviaQuestions(token);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate({ triviaQuestions: prevTriviaQuestion }) {
     const {
       error,
       history,
+      triviaQuestions,
     } = this.props;
 
+    if (prevTriviaQuestion !== triviaQuestions) this.timer();
     if (error) history.push('/');
   }
 
-  nextQuestion = () => {
-    const { questionIndex } = this.state;
-    this.setState({ questionIndex: questionIndex + 1 });
+  disableQuestion = () => {
+    console.log(1);
+    this.setState({ isDisabled: true });
   };
 
-  /* timer = () => {
-    const ONE_SECOND = 1000;
-    const QUESTION_TIME_LIMIT = 30000;
+  nextQuestion = () => {
+    const { history } = this.props;
+    const { questionIndex } = this.state;
+    const lastQuestionIndex = 4;
+    if (questionIndex === lastQuestionIndex) history.push('/feedback');
+    this.setState({ questionIndex: questionIndex + 1, timer: 30 });
+  };
 
-    const timerCooldown = setInterval(() => {
+  timer = () => {
+    const ONE_SECOND = 1000;
+    const timerID = setInterval(() => {
       const { timer } = this.state;
       const actualTime = timer - 1;
       this.setState({ timer: actualTime });
-      if (actualTime <= 0) clearInterval(timerCooldown);
+      if (actualTime <= 0) {
+        this.disableQuestion();
+        clearInterval(timerID);
+      }
     }, ONE_SECOND);
-    setTimeout(() => {
-      this.setState({ isDisable: true });
-    }, QUESTION_TIME_LIMIT);
   };
 
   playerScore = () => {
-    const { timer, gameDificult } = this.setState;
+    const { timer, questionIndex } = this.state;
+    const { triviaQuestions } = this.props;
+    const { difficulty } = triviaQuestions[questionIndex];
     const TEN_SECONDS = 10;
-    const points = TEN_SECONDS + (timer * gameDificult);
+    const points = TEN_SECONDS + (timer * DIFFICULTY_SCORE[difficulty]);
     this.setState((prevState) => ({
       userScore: prevState.userScore + points,
     }));
-  }; */
+  };
 
   render() {
-    const { questionIndex } = this.state;
+    const { questionIndex, isDisabled, timer } = this.state;
     const { triviaQuestions, requesting } = this.props;
-    console.log(triviaQuestions);
+
     return (
       <div>
         <Header />
@@ -75,10 +89,16 @@ export class Game extends Component {
             ? 'Loading...'
             : (
               <div>
-                <GameQuestion curQuestion={ triviaQuestions[questionIndex] } />
+                <GameQuestion
+                  curQuestion={ triviaQuestions[questionIndex] }
+                  timer={ timer }
+                />
                 <GameButtons
                   curQuestion={ triviaQuestions[questionIndex] }
                   nextQuestion={ this.nextQuestion }
+                  disableQuestion={ this.disableQuestion }
+                  isDisabled={ isDisabled }
+                  timer={ timer }
                 />
               </div>
             )

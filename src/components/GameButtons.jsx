@@ -3,25 +3,49 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 class GameButtons extends Component {
-  mapWrongAnswers = (answers) => answers.map((answer, index) => (
-    <button
-      type="button"
-      key={ index }
-      data-testid={ `wrong-answer-${index}` }
-    >
-      { answer }
-    </button>
-  ));
+  shouldComponentUpdate({ timer, isDisabled: prevIsDisabled }) {
+    const { isDisabled } = this.props;
+    return !timer || isDisabled !== prevIsDisabled;
+  }
 
-  rightAnswer = (answer) => (
-    <button
-      type="button"
-      key="correct_answer"
-      data-testid="correct-answer"
-    >
-      { answer }
-    </button>
-  );
+  componentDidUpdate() {
+    const { timer } = this.props;
+    if (!timer) this.answerQuestion();
+  }
+
+  mapWrongAnswers = (answers) => {
+    const { isDisabled, disableQuestion } = this.props;
+
+    return answers.map((answer, index) => (
+      <button
+        type="button"
+        key={ index }
+        data-testid={ `wrong-answer-${index}` }
+        onClick={ disableQuestion }
+        className={ isDisabled ? 'incorrectAnswer' : '' }
+        disabled={ isDisabled }
+      >
+        { answer }
+      </button>
+    ));
+  };
+
+  rightAnswer = (answer) => {
+    const { isDisabled, disableQuestion } = this.props;
+
+    return (
+      <button
+        type="button"
+        key="correct_answer"
+        data-testid="correct-answer"
+        onClick={ disableQuestion }
+        className={ isDisabled ? 'correctAnswer' : '' }
+        disabled={ isDisabled }
+      >
+        { answer }
+      </button>
+    );
+  };
 
   mapAnswersButtons = () => {
     const {
@@ -43,19 +67,24 @@ class GameButtons extends Component {
   });
 
   render() {
-    const { nextQuestion } = this.props;
+    const { nextQuestion, isDisabled } = this.props;
 
     return (
       <section>
         <section data-testid="answer-options">
           { this.randomAnswers(this.mapAnswersButtons()) }
         </section>
-        <button
-          type="button"
-          onClick={ nextQuestion }
-        >
-          Next
-        </button>
+        {
+          isDisabled && (
+            <button
+              type="button"
+              onClick={ nextQuestion }
+              data-testid="btn-next"
+            >
+              Next
+            </button>
+          )
+        }
       </section>
     );
   }
@@ -64,6 +93,9 @@ class GameButtons extends Component {
 GameButtons.propTypes = {
   curQuestion: PropTypes.shape().isRequired,
   nextQuestion: PropTypes.func.isRequired,
+  disableQuestion: PropTypes.func.isRequired,
+  isDisabled: PropTypes.bool.isRequired,
+  timer: PropTypes.number.isRequired,
   // requesting: PropTypes.bool.isRequired,
 };
 

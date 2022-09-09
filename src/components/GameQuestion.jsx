@@ -4,13 +4,22 @@ import { connect } from 'react-redux';
 
 class GameQuestion extends Component {
   render() {
-    const { curQuestion: { category, question } } = this.props;
+    const {
+      curQuestion: {
+        category,
+        question,
+      },
+      timer,
+    } = this.props;
 
     return (
-      <section>
-        <h2 data-testid="question-category">{ category }</h2>
-        <span data-testid="question-text">{ question }</span>
-      </section>
+      <div>
+        <section>
+          <h2 data-testid="question-category">{ category }</h2>
+          <span data-testid="question-text">{ question }</span>
+          <span>{ `Tempo restante: ${timer}s` }</span>
+        </section>
+      </div>
     );
   }
 }
@@ -18,6 +27,7 @@ class GameQuestion extends Component {
 GameQuestion.propTypes = {
   curQuestion: PropTypes.shape().isRequired,
   // requesting: PropTypes.bool.isRequired,
+  timer: PropTypes.number.isRequired,
 };
 
 export default connect()(GameQuestion);
