@@ -1,11 +1,24 @@
 import React from 'react';
-import { getByTestId, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
 import App from '../App'
 
-const initialState = {
-    login: {
+const goodAssertionState = {
+    apiReducer: {
+        requesting: true,
+        token: '',
+    },
+    player: {
+        name: 'Joao',
+        gravatarEmail: 'joao@possamai.com',
+        score: 0,
+        assertions: 4
+    }
+}
+
+const badAssertionState = {
+    apiReducer: {
         requesting: true,
         token: '',
     },
@@ -40,24 +53,27 @@ describe('testa a pagina de Feedback', () => {
         const { pathname } = history.location;
         expect(pathname).toBe('/ranking');
       })
-      
-      it('Testa as mensagem em Feedback', () => {
-        const { history } = renderWithRouterAndRedux(<App />, initialState)
-        history.push('/feedback')
-        // expect(test).toBe('Well Done!');
-        
 
-            const CouldBeBetterText = screen.getByText(/Could be better/i);
-            expect(CouldBeBetterText).toBeInTheDocument();
-       
-            // const assertionText = screen.getByText(/Well Done!/i);
-            // expect(assertionText).not.toBe();
+    it('Testa a mensagem de Feedback quando assertions é menor que 3', () => {
+        const { history } = renderWithRouterAndRedux(<App />, badAssertionState)
+        history.push('/feedback')
+        const couldBeBetterText = screen.getByRole('heading', { name: /Could be better.../i, level: 2 });
+        expect(couldBeBetterText).toBeInTheDocument();
     });
 
-    it('Testa as mensagem em Feedback', () => {
-        const { history } = renderWithRouterAndRedux(<App />)
-        history.push('/ranking')
-        const CouldBeBetterText = screen.getByRole('heading', /Could be better/i);
-        expect(CouldBeBetterText).toBeInTheDocument();
+    it('Testa a mensagem de Feedback quando assertions é maior ou igual a 3', () => {
+        const { history } = renderWithRouterAndRedux(<App />, goodAssertionState)
+        history.push('/feedback')
+        const wellDoneText = screen.getByRole('heading', { name:/Well Done!/i, level: 2 });
+        expect(wellDoneText).toBeInTheDocument();
     });
 });
+
+
+
+
+
+
+
+
+
