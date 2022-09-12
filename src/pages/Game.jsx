@@ -18,6 +18,7 @@ class Game extends Component {
     isDisabled: false,
     questionIndex: 0,
     // userScore: 0,
+    timerIDs: [],
   };
 
   componentDidMount() {
@@ -41,6 +42,11 @@ class Game extends Component {
     if (error) history.push('/');
   }
 
+  componentWillUnmount() {
+    const { timerIDs } = this.state;
+    timerIDs.forEach((id) => clearInterval(id));
+  }
+
   disableQuestion = () => this.setState({ isDisabled: true });
 
   nextQuestion = () => {
@@ -62,6 +68,8 @@ class Game extends Component {
         clearInterval(timerID);
       }
     }, ONE_SECOND);
+    const { timerIDs } = this.state;
+    this.setState({ timerIDs: [...timerIDs, timerID] });
   };
 
   playerScore = () => {
