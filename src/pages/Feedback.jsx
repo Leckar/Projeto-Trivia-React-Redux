@@ -15,12 +15,16 @@ class Feedback extends Component {
             ? <h2> Well Done! </h2>
             : <h2> Could be better... </h2>}
 
-          <h3 data-testid="feedback-total-question">
-            { `Você acertou ${assertions} questões!` }
+          <h3>
+            Você acertou
+            <span data-testid="feedback-total-question">{assertions}</span>
+            questões!
           </h3>
 
-          <h3 data-testid="feedback-total-score">
-            { `Um total de ${score} pontos` }
+          <h3>
+            Um total de
+            <span data-testid="feedback-total-score">{score}</span>
+            pontos
           </h3>
 
           <button
