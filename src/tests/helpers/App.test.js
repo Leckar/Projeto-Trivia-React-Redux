@@ -5,21 +5,21 @@ import renderWithRouterAndRedux from './renderWithRouterAndRedux';
 import App from '../../App';
 import { tokenResponse } from '../../../cypress/mocks/token';
 
-describe('testa a pagina de login', () => {
+describe('Testa a página de Login', () => {
 	const email = 'joao@possamai.com';
 	const name = 'Joao';
 	const wrongEmail = 'joaopossamaicom';
 	const wrongName = 'Jo';
 	const initialState = {
-		login: {
+		apiReducer: {
 			requesting: true,
 			token: '',
-			player: {
-				name: 'Joao',
-				gravatarEmail: 'joao@possamai.com',
-				score: 0,
-				assertions: 0
-			}
+		},
+		player: {
+			name: 'Joao',
+			gravatarEmail: 'joao@possamai.com',
+			score: 0,
+			assertions: 0
 		}
 	}
 
@@ -87,7 +87,7 @@ describe('testa a pagina de login', () => {
 		expect(global.fetch).toHaveBeenCalledWith('https://opentdb.com/api_token.php?command=request');
 
 		await waitFor(() => {
-			const { login: { token } } = store.getState();
+			const { apiReducer: { token } } = store.getState();
 			expect(token).toBe(tokenResponse.token);
 		});
 
