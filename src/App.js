@@ -7,6 +7,7 @@ import Game from './pages/Game';
 import './styles/Game.css';
 import './App.css';
 import Feedback from './pages/Feedback';
+import Ranking from './pages/Ranking';
 
 export default function App() {
   return (
@@ -27,6 +28,10 @@ export default function App() {
       <Route
         path="/feedback"
         component={ Feedback }
+      />
+      <Route
+        path="/ranking"
+        component={ Ranking }
       />
     </Switch>
   );
