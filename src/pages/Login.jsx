@@ -108,4 +108,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchSetUserAct: (state) => dispatch(setUserAct(state)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(null, mapDispatchToProps)(Login);
