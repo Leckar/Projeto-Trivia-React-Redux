@@ -1,9 +1,18 @@
-import requestToken from '../../services/requestAPI';
+import requestToken from '../../services/requestToken';
+import requestTrivia from '../../services/requestTrivia';
 
-const REQUEST_API_TOKEN = 'REQUEST_API_TOKEN';
+const REQUEST_API = 'REQUEST_API';
 const RECEIVE_TOKEN_SUCCESS = 'RECEIVE_TOKEN_SUCCESS';
-const RECEIVE_TOKEN_FAILURE = 'RECEIVE_TOKEN_FAILURE';
+const RECEIVE_TRIVIA_SUCCESS = 'RECEIVE_TRIVIA_SUCCESS';
+const RECEIVE_FAILURE = 'RECEIVE_FAILURE';
 const SET_USER_DATA = 'SET_USER_DATA';
+const SUM_SCORE = 'SUM_SCORE';
+
+// somar pontos
+const sumScoreAct = (points) => ({
+  type: SUM_SCORE,
+  payload: points,
+});
 
 // salvar login do usuário
 const setUserAct = (userData) => ({
@@ -12,8 +21,8 @@ const setUserAct = (userData) => ({
 });
 
 // pedir token
-const requestTokenAct = () => ({
-  type: REQUEST_API_TOKEN,
+const requestingApiAct = () => ({
+  type: REQUEST_API,
 });
 
 // token sucesso
@@ -22,29 +31,58 @@ const receiveTokenSuccess = (token) => ({
   payload: token,
 });
 
-// token falha
-const receiveTokenFailure = (error) => ({
-  type: RECEIVE_TOKEN_FAILURE,
+// perguntas sucesso
+const receiveTriviaSuccess = (questionsObj) => ({
+  type: RECEIVE_TRIVIA_SUCCESS,
+  payload: questionsObj,
+});
+
+// falha
+const receiveFailure = (error) => ({
+  type: RECEIVE_FAILURE,
   payload: error,
 });
 
 // fetch token
 const fetchToken = async (dispatch) => {
-  dispatch(requestTokenAct());
-  return requestToken()
-    .then(({ token }) => {
-      dispatch(receiveTokenSuccess(token));
-      localStorage.setItem('token', token);
-    })
-    .catch((error) => dispatch(receiveTokenFailure(error)));
+  dispatch(requestingApiAct());
+
+  try {
+    const { response_code: responseCode, token } = await requestToken();
+    console.log(token);
+    if (responseCode !== 0) throw new Error('Token Invalid');
+
+    dispatch(receiveTokenSuccess(token));
+    localStorage.setItem('token', token);
+  } catch (error) {
+    dispatch(receiveFailure(error.message));
+    localStorage.removeItem('token');
+  }
 };
 
-export default fetchToken;
+// fetch trivia questions
+const fetchTrivia = (token) => async (dispatch) => {
+  dispatch(requestingApiAct());
+  try {
+    const { response_code: responseCode, results } = await requestTrivia(token);
+    if (responseCode !== 0) throw new Error('Token Invalid');
+
+    dispatch(receiveTriviaSuccess(results));
+  } catch (error) {
+    dispatch(receiveFailure(error.message));
+    localStorage.removeItem('token');
+  }
+};
 
 export {
-  REQUEST_API_TOKEN,
+  REQUEST_API,
   RECEIVE_TOKEN_SUCCESS,
-  RECEIVE_TOKEN_FAILURE,
+  RECEIVE_FAILURE,
   SET_USER_DATA,
+  RECEIVE_TRIVIA_SUCCESS,
+  SUM_SCORE,
   setUserAct,
+  fetchToken,
+  fetchTrivia,
+  sumScoreAct,
 };
