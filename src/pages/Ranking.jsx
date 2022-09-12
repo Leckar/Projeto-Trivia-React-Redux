@@ -12,7 +12,7 @@ class Ranking extends Component {
 
   mapRanking = (rank) => this.sortRanking(rank)
     .map(({ name, picture, score }, index) => (
-      <div key={ picture }>
+      <div key={ index }>
         <img src={ picture } alt={ name } />
         <h2 data-testid={ `player-name-${index}` }>{ name }</h2>
         <span data-testid={ `player-score-${index}` }>{ score }</span>
