@@ -27,16 +27,17 @@ class Game extends Component {
     } = this.props;
 
     dispatchTriviaQuestions(token);
+    this.timer();
   }
 
-  componentDidUpdate({ triviaQuestions: prevTriviaQuestion }) {
+  componentDidUpdate(_, { questionIndex: prevQuestionIndex }) {
     const {
       error,
       history,
-      triviaQuestions,
     } = this.props;
+    const { questionIndex } = this.state;
 
-    if (prevTriviaQuestion !== triviaQuestions) this.timer();
+    if (prevQuestionIndex !== questionIndex) this.timer();
     if (error) history.push('/');
   }
 
