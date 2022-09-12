@@ -5,6 +5,8 @@ import Header from '../components/Header';
 import GameButtons from '../components/GameButtons';
 import GameQuestion from '../components/GameQuestion';
 import { fetchTrivia, sumScoreAct } from '../redux/actions';
+import { saveInStorage, readStorage, RANKING, TOKEN } from '../services/localStorage';
+import getGravatarImage from '../services/getGravatarImage';
 
 const DIFFICULTY_SCORE = {
   easy: 1,
@@ -49,11 +51,43 @@ class Game extends Component {
 
   disableQuestion = () => this.setState({ isDisabled: true });
 
+  saveUserRank = () => {
+    const { player: { name, score, gravatarEmail: userEmail } } = this.props;
+    const pictureHash = getGravatarImage(userEmail);
+    const newUserRank = {
+      name,
+      score,
+      picture: pictureHash,
+    };
+    const ranking = readStorage(RANKING);
+    if (!ranking.length) saveInStorage(RANKING, [newUserRank]);
+    else {
+      const findInRanking = ranking
+        .some(({ gravatarEmail }) => getGravatarImage(gravatarEmail) === pictureHash);
+      const newRanking = findInRanking ? ranking
+        .reduce((acc, user) => {
+          if (getGravatarImage(user.gravatarEmail) === pictureHash) {
+            return [...acc, newUserRank];
+          }
+          return [...acc, user];
+        }, [])
+        : [...ranking, newUserRank];
+      saveInStorage(RANKING, newRanking);
+    }
+    localStorage.removeItem(TOKEN);
+  };
+
   nextQuestion = () => {
-    const { history } = this.props;
+    const { history, triviaQuestions } = this.props;
     const { questionIndex } = this.state;
-    const lastQuestionIndex = 4;
-    if (questionIndex === lastQuestionIndex) history.push('/feedback');
+    const lastQuestionIndex = triviaQuestions.length - 1;
+    if (questionIndex === lastQuestionIndex) {
+      // disparar a action de salvar o ranking
+      this.saveUserRank();
+      // atualizar o ranking do localStorage
+
+      history.push('/feedback');
+    }
     this.setState({ questionIndex: questionIndex + 1, timer: 30, isDisabled: false });
   };
 
@@ -127,13 +161,15 @@ Game.propTypes = {
   dispatchPlayerScore: PropTypes.func.isRequired,
   triviaQuestions: PropTypes.arrayOf(PropTypes.shape()),
   requesting: PropTypes.bool.isRequired,
+  player: PropTypes.shape().isRequired,
 };
 
-const mapStateToProps = ({ apiReducer }) => ({
+const mapStateToProps = ({ apiReducer, player }) => ({
   error: apiReducer.error,
   token: apiReducer.token,
   triviaQuestions: apiReducer.triviaQuestions,
   requesting: apiReducer.requesting,
+  player,
 });
 
 const mapDispatchToProps = (dispatch) => ({

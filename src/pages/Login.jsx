@@ -11,18 +11,12 @@ class Login extends Component {
     isFormInvalid: true,
   };
 
-  componentDidUpdate() {
-    const { token, history } = this.props;
-    if (token) {
-      history.push('/game');
-    }
-  }
-
-  startGame = () => {
-    const { dispatchFetchToken, dispatchSetUserAct } = this.props;
+  startGame = async () => {
+    const { dispatchFetchToken, dispatchSetUserAct, history } = this.props;
     const { isFormInvalid, ...userData } = this.state;
-    dispatchFetchToken();
-    dispatchSetUserAct(userData);
+    await dispatchFetchToken();
+    await dispatchSetUserAct(userData);
+    history.push('/game');
   };
 
   handleChange = ({ target: { name, value } }) => {
@@ -107,12 +101,7 @@ Login.propTypes = {
   dispatchFetchToken: PropTypes.func.isRequired,
   dispatchSetUserAct: PropTypes.func.isRequired,
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
-  token: PropTypes.string.isRequired,
 };
-
-const mapStateToProps = ({ apiReducer }) => ({
-  token: apiReducer.token,
-});
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchFetchToken: () => dispatch(fetchToken),

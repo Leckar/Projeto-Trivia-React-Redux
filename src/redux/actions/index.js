@@ -1,5 +1,11 @@
 import requestToken from '../../services/requestToken';
 import requestTrivia from '../../services/requestTrivia';
+import {
+  saveInStorage,
+  // readStorage,
+  TOKEN,
+  // RANKING,
+} from '../../services/localStorage';
 
 const REQUEST_API = 'REQUEST_API';
 const RECEIVE_TOKEN_SUCCESS = 'RECEIVE_TOKEN_SUCCESS';
@@ -7,6 +13,7 @@ const RECEIVE_TRIVIA_SUCCESS = 'RECEIVE_TRIVIA_SUCCESS';
 const RECEIVE_FAILURE = 'RECEIVE_FAILURE';
 const SET_USER_DATA = 'SET_USER_DATA';
 const SUM_SCORE = 'SUM_SCORE';
+const SET_USER_RANKING = 'SET_USER_RANKING';
 
 // somar pontos
 const sumScoreAct = (points) => ({
@@ -48,15 +55,15 @@ const fetchToken = async (dispatch) => {
   dispatch(requestingApiAct());
 
   try {
-    const { response_code: responseCode, token } = await requestToken();
-    console.log(token);
+    const { response_code: responseCode, token: tokenData } = await requestToken();
+
     if (responseCode !== 0) throw new Error('Token Invalid');
 
-    dispatch(receiveTokenSuccess(token));
-    localStorage.setItem('token', token);
+    dispatch(receiveTokenSuccess(tokenData));
+    saveInStorage(TOKEN, tokenData);
   } catch (error) {
     dispatch(receiveFailure(error.message));
-    localStorage.removeItem('token');
+    localStorage.removeItem(TOKEN);
   }
 };
 
@@ -70,9 +77,14 @@ const fetchTrivia = (token) => async (dispatch) => {
     dispatch(receiveTriviaSuccess(results));
   } catch (error) {
     dispatch(receiveFailure(error.message));
-    localStorage.removeItem('token');
+    localStorage.removeItem(TOKEN);
   }
 };
+
+/* const saveUserRanking = (userRankData) => ({
+  type: SET_USER_RANKING,
+  payload: userRankData
+}); */
 
 export {
   REQUEST_API,
@@ -81,8 +93,10 @@ export {
   SET_USER_DATA,
   RECEIVE_TRIVIA_SUCCESS,
   SUM_SCORE,
+  SET_USER_RANKING,
   setUserAct,
   fetchToken,
   fetchTrivia,
   sumScoreAct,
+  // saveUserRanking,
 };
