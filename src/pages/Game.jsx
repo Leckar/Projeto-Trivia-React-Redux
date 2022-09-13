@@ -19,8 +19,7 @@ class Game extends Component {
     timer: 30,
     isDisabled: false,
     questionIndex: 0,
-    // userScore: 0,
-    timerIDs: [],
+    timerID: 0,
   };
 
   componentDidMount() {
@@ -34,19 +33,12 @@ class Game extends Component {
   }
 
   componentDidUpdate(_, { questionIndex: prevQuestionIndex }) {
-    const {
-      error,
-      history,
-    } = this.props;
-    const { questionIndex } = this.state;
+    const { error, history } = this.props;
+    const { questionIndex, isDisabled, timerID } = this.state;
 
+    if (isDisabled) clearInterval(timerID);
     if (prevQuestionIndex !== questionIndex) this.timer();
     if (error) history.push('/');
-  }
-
-  componentWillUnmount() {
-    const { timerIDs } = this.state;
-    timerIDs.forEach((id) => clearInterval(id));
   }
 
   disableQuestion = () => this.setState({ isDisabled: true });
@@ -82,10 +74,7 @@ class Game extends Component {
     const { questionIndex } = this.state;
     const lastQuestionIndex = triviaQuestions.length - 1;
     if (questionIndex === lastQuestionIndex) {
-      // disparar a action de salvar o ranking
       this.saveUserRank();
-      // atualizar o ranking do localStorage
-
       history.push('/feedback');
     }
     this.setState({ questionIndex: questionIndex + 1, timer: 30, isDisabled: false });
@@ -102,8 +91,7 @@ class Game extends Component {
         clearInterval(timerID);
       }
     }, ONE_SECOND);
-    const { timerIDs } = this.state;
-    this.setState({ timerIDs: [...timerIDs, timerID] });
+    this.setState({ timerID });
   };
 
   playerScore = () => {
