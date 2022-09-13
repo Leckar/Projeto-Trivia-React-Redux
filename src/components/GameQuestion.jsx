@@ -17,7 +17,7 @@ class GameQuestion extends Component {
         <section>
           <h2 data-testid="question-category">{ category }</h2>
           <span data-testid="question-text">{ question }</span>
-          <span>{ `Tempo restante: ${timer}s` }</span>
+          <span data-testid="question-timer">{ `Tempo restante: ${timer}s` }</span>
         </section>
       </div>
     );

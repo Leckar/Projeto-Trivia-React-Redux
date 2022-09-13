@@ -31,8 +31,6 @@ const badAssertionState = {
     }
 }
 
-const test = /Well Done!/i;
-
 describe('testa a pagina de Feedback', () => {
     it('Verifica se o botão "Play again" redireciona para a página Home', () => {
         const { history } = renderWithRouterAndRedux(<App />);
