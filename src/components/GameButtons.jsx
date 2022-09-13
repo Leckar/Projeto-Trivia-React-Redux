@@ -1,44 +1,50 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import convertHTMLEntities from '../services/convertHTMLEntities';
 
 class GameButtons extends Component {
-  shouldComponentUpdate({
-    timer,
-    isDisabled: prevIsDisabled,
-    curQuestion: { correct_answer: prevCorrectAnswer },
-  }) {
-    const { isDisabled, curQuestion: { correct_answer: correctAnswer } } = this.props;
-    return !timer || isDisabled !== prevIsDisabled || correctAnswer !== prevCorrectAnswer;
-  }
-
-  mapWrongAnswers = (answers) => {
-    const { isDisabled, disableQuestion } = this.props;
-
-    return answers.map((answer, index) => (
-      <button
-        type="button"
-        key={ index }
-        data-testid={ `wrong-answer-${index}` }
-        onClick={ disableQuestion }
-        className={ isDisabled ? 'incorrectAnswer' : '' }
-        disabled={ isDisabled }
-      >
-        { answer }
-      </button>
-    ));
+  state = {
+    randomizedAnswers: [],
   };
 
-  rightAnswer = (answer) => {
-    const { isDisabled, playerScore } = this.props;
+  componentDidMount() {
+    this.setState({ randomizedAnswers: this.randomAnswers(this.mapAnswers()) });
+  }
+
+  componentDidUpdate({ isDisabled: prevIsDisabled }) {
+    const { isDisabled } = this.props;
+    if (prevIsDisabled && !isDisabled) {
+      this.setState({ randomizedAnswers: this.randomAnswers(this.mapAnswers()) });
+    }
+  }
+
+  mapAnswers = () => {
+    const {
+      curQuestion: {
+        incorrect_answers: incorrectAnswers,
+        correct_answer: correctAnswer,
+      },
+    } = this.props;
+    return [...incorrectAnswers, correctAnswer]
+      .map((answer) => convertHTMLEntities(answer));
+  };
+
+  mapAnswerButton = (answer, i) => {
+    const {
+      isDisabled,
+      disableQuestion,
+      playerScore,
+      curQuestion: { correct_answer: correctAnswer },
+    } = this.props;
 
     return (
       <button
         type="button"
-        key="correct_answer"
-        data-testid="correct-answer"
-        onClick={ playerScore }
-        className={ isDisabled ? 'correctAnswer' : '' }
+        key={ i }
+        data-testid={ answer === correctAnswer ? 'correct-answer' : `wrong-answer-${i}` }
+        onClick={ answer === correctAnswer ? playerScore : disableQuestion }
+        className="answer"
         disabled={ isDisabled }
       >
         { answer }
@@ -46,32 +52,30 @@ class GameButtons extends Component {
     );
   };
 
-  mapAnswersButtons = () => {
-    const {
-      curQuestion: {
-        incorrect_answers: incorrectAnswers,
-        correct_answer: correctAnswer,
-      },
-    } = this.props;
-
-    return [this.rightAnswer(correctAnswer), ...this.mapWrongAnswers(incorrectAnswers)];
-  };
+  mapAnswerButtons = () => this.mapAnswers()
+    .map((answer, ind) => this.mapAnswerButton(answer, ind));
 
   randomAnswers = (answerButtons) => answerButtons.sort(() => {
     const randomAverage = 0.5;
-    const positive = 1;
-    const negative = -1;
-    if (Math.random() > randomAverage) return positive;
-    return negative;
+    return Math.random() - randomAverage;
   });
 
+  sortedButtons = () => {
+    const { randomizedAnswers } = this.state;
+
+    return this.mapAnswerButtons()
+      .sort(({ props: { children: childrenA } }, { props: { children: childrenB } }) => (
+        randomizedAnswers.indexOf(childrenA) - randomizedAnswers.indexOf(childrenB)
+      ));
+  };
+
   render() {
-    const { nextQuestion, isDisabled } = this.props;
+    const { isDisabled, nextQuestion } = this.props;
 
     return (
       <section>
         <section data-testid="answer-options">
-          { this.randomAnswers(this.mapAnswersButtons()) }
+          { this.sortedButtons() }
         </section>
         {
           isDisabled && (
@@ -95,16 +99,6 @@ GameButtons.propTypes = {
   disableQuestion: PropTypes.func.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   playerScore: PropTypes.func.isRequired,
-  timer: PropTypes.number.isRequired,
-  // requesting: PropTypes.bool.isRequired,
 };
-
-/* const mapStateToProps = ({ apiReducer: { requesting, triviaQuestions } }) => ({
-  requesting,
-}); */
-
-// const mapDispatchToProps = (dispatch) => ({
-//   dispatchFetchTrivia: (token) => dispatch(fetchTrivia(token)),
-// });
 
 export default connect()(GameButtons);

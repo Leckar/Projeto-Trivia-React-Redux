@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import convertHTMLEntities from '../services/convertHTMLEntities';
 
 class GameQuestion extends Component {
   render() {
@@ -16,7 +17,7 @@ class GameQuestion extends Component {
       <div>
         <section>
           <h2 data-testid="question-category">{ category }</h2>
-          <span data-testid="question-text">{ question }</span>
+          <span data-testid="question-text">{ convertHTMLEntities(question) }</span>
           <span data-testid="question-timer">{ `Tempo restante: ${timer}s` }</span>
         </section>
       </div>

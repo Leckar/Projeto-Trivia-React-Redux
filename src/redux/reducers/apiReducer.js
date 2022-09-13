@@ -23,12 +23,14 @@ const apiReducer = (state = INITIAL_STATE, { type, payload }) => {
     return {
       ...state,
       requesting: false,
+      error: '',
       token: payload,
     };
   case RECEIVE_TRIVIA_SUCCESS:
     return {
       ...state,
       requesting: false,
+      error: '',
       triviaQuestions: payload,
     };
   case RECEIVE_FAILURE:
