@@ -145,11 +145,12 @@ class Game extends Component {
 Game.defaultProps = {
   error: '',
   triviaQuestions: [],
+  token: '',
 };
 
 Game.propTypes = {
   error: PropTypes.string,
-  token: PropTypes.string.isRequired,
+  token: PropTypes.string,
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   dispatchTriviaQuestions: PropTypes.func.isRequired,
   dispatchPlayerScore: PropTypes.func.isRequired,
