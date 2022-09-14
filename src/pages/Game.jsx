@@ -90,10 +90,11 @@ class Game extends Component {
     const timerID = setInterval(() => {
       const { timer } = this.state;
       const actualTime = timer - 1;
-      this.setState({ timer: actualTime });
-      if (actualTime <= 0) {
+      if (actualTime < 0) {
         this.disableQuestion();
         clearInterval(timerID);
+      } else {
+        this.setState({ timer: actualTime });
       }
     }, ONE_SECOND);
     this.setState({ timerID });
