@@ -54,11 +54,16 @@ class Game extends Component {
     const ranking = readStorage(RANKING);
     if (!ranking.length) saveInStorage(RANKING, [newUserRank]);
     else {
-      const findInRanking = ranking
-        .some(({ gravatarEmail }) => getGravatarImage(gravatarEmail) === pictureHash);
+      // esse some só retorna false pois não existe a chave
+      // gravatarEmail nos objetos salvos no ranking
+      // const findInRanking = ranking
+      //   .some(({ gravatarEmail }) => gravatarEmail === userEmail);
+      const findInRanking = ranking.some(({
+        name: rankName, picture: rankPic,
+      }) => rankName === name && rankPic === pictureHash);
       const newRanking = findInRanking ? ranking
         .reduce((acc, user) => {
-          if (getGravatarImage(user.gravatarEmail) === pictureHash) {
+          if (user.picture === pictureHash) {
             return [...acc, newUserRank];
           }
           return [...acc, user];
@@ -113,7 +118,7 @@ class Game extends Component {
         <Header />
         {
           requesting || !triviaQuestions.length
-            ? 'Loading...'
+            ? <p>Loading...</p>
             : (
               <div>
                 <GameQuestion

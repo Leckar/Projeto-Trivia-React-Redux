@@ -9,11 +9,8 @@ describe('Testes do GameQuestion', () => {
     it('should render the elements correctly', async () => {
         const { history } = renderWithRouterAndRedux(<App />);
         const userName = screen.getByTestId('input-player-name');
-        expect(userName).toBeInTheDocument();
         const userEmail = screen.getByTestId('input-gravatar-email');
-        expect(userEmail).toBeInTheDocument();
         const playBttn = screen.getByTestId('btn-play');
-        expect(playBttn).toBeInTheDocument();
         userEvent.type(userName, 'thisIsATest');
         userEvent.type(userEmail, 'test@test.com');
         userEvent.click(playBttn);
@@ -31,4 +28,5 @@ describe('Testes do GameQuestion', () => {
         await new Promise((test) => setTimeout(test, 30000));
         expect(screen.getByTestId('question-timer').innerHTML).toMatch(/Tempo restante: 0s/i);
     });
+    it('', () => {});
 });
