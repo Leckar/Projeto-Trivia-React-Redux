@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import convertHTMLEntities from '../services/convertHTMLEntities';
+import decodeHTMLEntities from '../services/decodeHTMLEntities';
 
 class GameButtons extends Component {
   state = {
@@ -26,8 +26,9 @@ class GameButtons extends Component {
         correct_answer: correctAnswer,
       },
     } = this.props;
-    return [...incorrectAnswers, correctAnswer]
-      .map((answer) => convertHTMLEntities(answer));
+    const answers = [...incorrectAnswers, correctAnswer];
+
+    return answers.map((answer) => decodeHTMLEntities(answer));
   };
 
   mapAnswerButton = (answer, i) => {
@@ -37,13 +38,13 @@ class GameButtons extends Component {
       playerScore,
       curQuestion: { correct_answer: correctAnswer },
     } = this.props;
-
+    const decodedAnswer = decodeHTMLEntities(correctAnswer);
     return (
       <button
         type="button"
         key={ i }
-        data-testid={ answer === correctAnswer ? 'correct-answer' : `wrong-answer-${i}` }
-        onClick={ answer === correctAnswer ? playerScore : disableQuestion }
+        data-testid={ answer === decodedAnswer ? 'correct-answer' : `wrong-answer-${i}` }
+        onClick={ answer === decodedAnswer ? playerScore : disableQuestion }
         className="answer"
         disabled={ isDisabled }
       >
@@ -62,11 +63,18 @@ class GameButtons extends Component {
 
   sortedButtons = () => {
     const { randomizedAnswers } = this.state;
-
+    console.log('----------------');
+    console.log(this.mapAnswerButtons());
     return this.mapAnswerButtons()
-      .sort(({ props: { children: childrenA } }, { props: { children: childrenB } }) => (
-        randomizedAnswers.indexOf(childrenA) - randomizedAnswers.indexOf(childrenB)
-      ));
+      .sort(({ props: { children: childrenA } }, { props: { children: childrenB } }) => {
+        const indA = randomizedAnswers.indexOf(childrenA);
+        const indB = randomizedAnswers.indexOf(childrenB);
+        console.log('-----');
+        console.log(randomizedAnswers);
+        console.log(childrenA, indA);
+        console.log(childrenB, indB);
+        return indA - indB;
+      });
   };
 
   render() {
