@@ -8,3 +8,5 @@ Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua cr
 - quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
 - quais arquivos/pastas foram desenvolvidos pela Trybe.
 -->
+Projeto feito em grupo com os colegas de curso Caio César Pereira (Github user caiocsper),
+Carlos Eduardo Stephan Almeida de Deus (Github user StephanCadu) e Luídi de souza pires (Github user LuidiPiresHub).
